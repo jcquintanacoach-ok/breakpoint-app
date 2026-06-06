@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Break Point</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0a0a0a;color:#f0f0f0;font-size:14px}
+:root{--g:#4ade80;--gdim:rgba(74,222,128,.12);--gdim2:rgba(74,222,128,.06);--s:#111;--s2:#1a1a1a;--b:rgba(255,255,255,.08);--m:#888;--m2:#555}
+
+/* ACCESS */
+#access{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
+.acc-logo{font-size:11px;letter-spacing:.12em;color:var(--g);text-transform:uppercase;margin-bottom:24px}
+.acc-title{font-size:22px;font-weight:500;margin-bottom:6px}
+.acc-sub{font-size:13px;color:var(--m);margin-bottom:32px}
+.acc-form{width:100%;max-width:300px}
+.acc-lbl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px;text-align:left}
+.acc-inp{width:100%;background:var(--s);border:1px solid var(--b);border-radius:10px;color:#f0f0f0;font-size:15px;font-family:inherit;padding:11px 14px;margin-bottom:10px;letter-spacing:.04em}
+.acc-inp:focus{outline:none;border-color:rgba(74,222,128,.4)}
+.acc-btn{width:100%;background:var(--g);color:#0a0a0a;border:none;border-radius:10px;font-size:14px;font-weight:500;padding:11px;cursor:pointer;font-family:inherit}
+.acc-btn:hover{opacity:.85}
+.acc-btn:disabled{opacity:.5;cursor:not-allowed}
+.acc-err{font-size:12px;color:#f87171;margin-top:8px;display:none}
+.acc-back{background:none;border:none;color:var(--m);font-size:13px;cursor:pointer;font-family:inherit;margin-top:12px;text-decoration:underline;display:block}
+
+/* MAIN */
+#main{display:none;min-height:100vh}
+.preview-bar{display:none;background:rgba(74,222,128,.1);border-bottom:1px solid rgba(74,222,128,.2);padding:8px 18px;align-items:center;justify-content:space-between}
+.preview-bar span{font-size:12px;color:var(--g);display:flex;align-items:center;gap:6px}
+.preview-bar button{background:none;border:1px solid rgba(74,222,128,.3);color:var(--g);font-size:12px;padding:4px 12px;border-radius:6px;cursor:pointer;font-family:inherit}
+.topbar{background:var(--s);border-bottom:1px solid var(--b);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+.tb-logo{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--g);text-transform:uppercase}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-name{font-size:12px;color:var(--m)}
+.tb-out{background:none;border:none;color:var(--m2);cursor:pointer;font-size:12px;font-family:inherit}
+.nav{background:var(--s);border-bottom:1px solid var(--b);display:flex;padding:0 12px;gap:2px;overflow-x:auto}
+.nb{background:none;border:none;color:var(--m);font-size:12px;padding:10px 10px;cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;display:flex;align-items:center;gap:5px;font-family:inherit;white-space:nowrap}
+.nb:hover{color:#f0f0f0}
+.nb.on{color:var(--g);border-bottom-color:var(--g)}
+.nb i{font-size:14px}
+.content{padding:18px}
+.scr{display:none}
+.scr.on{display:block}
+
+/* HOME */
+.home-hi{margin-bottom:18px}
+.home-hi h2{font-size:18px;font-weight:500;margin-bottom:3px}
+.home-hi p{font-size:13px;color:var(--m)}
+.prog-block{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.prog-lbl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.06em}
+.prog-day{font-size:22px;font-weight:500;color:var(--g)}
+.prog-bg{background:var(--s2);border-radius:4px;height:6px;overflow:hidden}
+.prog-fill{background:var(--g);height:100%;border-radius:4px;transition:width .4s}
+.prog-sub{display:flex;justify-content:space-between;margin-top:8px}
+.prog-sub span,.prog-dates span{font-size:11px;color:var(--m2)}
+.prog-dates{display:flex;justify-content:space-between;margin-top:3px}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qcard{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:14px;cursor:pointer;transition:border-color .2s,background .2s}
+.qcard:hover{border-color:var(--g);background:var(--gdim2)}
+.qcard i{font-size:20px;color:var(--g);margin-bottom:8px;display:block}
+.qcard h3{font-size:13px;font-weight:500;margin-bottom:2px}
+.qcard p{font-size:11px;color:var(--m)}
+
+/* GENERAL */
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.st{font-size:16px;font-weight:500}
+.fp{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:16px;margin-bottom:16px}
+.fl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:block}
+.fi,.fta,.fsel{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:8px;color:#f0f0f0;font-size:13px;font-family:inherit;padding:8px 10px}
+.fta{resize:vertical;min-height:80px}
+.fsel option{background:#1a1a1a}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fr{margin-bottom:12px}
+.bsave{background:var(--g);color:#0a0a0a;border:none;font-size:13px;font-weight:500;padding:9px 18px;border-radius:8px;cursor:pointer;font-family:inherit}
+.badd{background:var(--gdim);border:1px solid rgba(74,222,128,.25);color:var(--g);font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:inherit}
+
+/* REFLEXIONES */
+.introw{display:flex;align-items:center;gap:10px}
+.introw input[type=range]{flex:1;accent-color:var(--g)}
+.intval{font-size:18px;font-weight:500;color:var(--g);min-width:28px;text-align:center}
+.idots{display:flex;gap:4px;margin-top:6px}
+.idot{width:8px;height:8px;border-radius:50%;background:var(--s2);border:1px solid var(--b);transition:background .2s}
+.idot.on{background:var(--g);border-color:var(--g)}
+.rc{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.rct{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.rcm{display:flex;align-items:center;gap:8px}
+.rcd{font-size:11px;color:var(--m)}
+.rbadge{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--gdim);color:var(--g)}
+.rres{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--s2);color:var(--m)}
+.rint{font-size:11px;color:var(--m);display:flex;align-items:center;gap:4px}
+.rc h4{font-size:13px;font-weight:500;margin-bottom:4px}
+.rc p{font-size:12px;color:var(--m);line-height:1.5}
+
+/* PROTOCOLOS */
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.ptab{background:var(--s);border:1px solid var(--b);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;color:var(--m);font-family:inherit;transition:all .2s}
+.ptab.on{background:var(--gdim);border-color:rgba(74,222,128,.3);color:var(--g)}
+.pcard{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:18px}
+.pch{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.pch i{font-size:22px;color:var(--g)}
+.pch h3{font-size:15px;font-weight:500}
+.pch p{font-size:12px;color:var(--m)}
+.pstep{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.pnum{width:22px;height:22px;border-radius:50%;background:var(--gdim);border:1px solid rgba(74,222,128,.2);color:var(--g);font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ptxt{font-size:13px;color:var(--m);line-height:1.6}
+
+/* ENTREGABLES */
+.ei{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px}
+.ei.done{border-color:rgba(74,222,128,.2);background:var(--gdim2)}
+.ei.progress{border-color:rgba(56,189,248,.2);background:rgba(56,189,248,.04)}
+.eck{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.eck.done{background:var(--g);color:#0a0a0a}
+.eck.progress{background:rgba(56,189,248,.15);border:1.5px solid #38bdf8;color:#38bdf8}
+.eck.pending{background:var(--s2);border:1.5px solid var(--b);color:var(--m2)}
+.eb{flex:1}
+.eb h4{font-size:13px;font-weight:500;margin-bottom:3px}
+.eb p{font-size:12px;color:var(--m);line-height:1.5}
+.est{font-size:10px;padding:3px 9px;border-radius:20px;align-self:flex-start;flex-shrink:0}
+.est.done{background:var(--gdim);color:var(--g)}
+.est.progress{background:rgba(56,189,248,.1);color:#38bdf8}
+.est.pending{background:var(--s2);color:var(--m2)}
+
+/* BLOQUES ALUMNO */
+.blk-cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.blk-tab{background:var(--s);border:1px solid var(--b);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;color:var(--m);font-family:inherit;transition:all .2s}
+.blk-tab.on{background:var(--gdim);border-color:rgba(74,222,128,.3);color:var(--g)}
+.blk-card{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:16px;margin-bottom:12px}
+.blk-card.done{border-color:rgba(74,222,128,.2);background:var(--gdim2)}
+.blk-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px}
+.blk-title{font-size:14px;font-weight:500;flex:1}
+.blk-badges{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.blk-badge{font-size:10px;padding:2px 8px;border-radius:20px}
+.blk-badge.mental{background:rgba(167,139,250,.15);color:#a78bfa}
+.blk-badge.movilidad{background:rgba(251,191,36,.1);color:#fbbf24}
+.blk-badge.drill{background:rgba(56,189,248,.1);color:#38bdf8}
+.blk-badge.level{background:var(--s2);color:var(--m)}
+.blk-body{font-size:13px;color:var(--m);line-height:1.7;margin-bottom:12px;white-space:pre-line}
+.blk-video{margin-bottom:12px}
+.blk-video iframe{width:100%;border-radius:8px;border:none;aspect-ratio:16/9}
+.blk-footer{display:flex;justify-content:space-between;align-items:center}
+.btn-complete{background:var(--gdim);border:1px solid rgba(74,222,128,.3);color:var(--g);font-size:12px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px}
+.btn-complete.done{background:var(--g);color:#0a0a0a;border-color:var(--g)}
+.blk-date{font-size:11px;color:var(--m2)}
+
+/* ADMIN */
+.csec{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.csec h3{font-size:11px;font-weight:500;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.crow{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px}
+.crow label{font-size:13px;color:var(--m);white-space:nowrap}
+.ci{background:var(--s2);border:1px solid var(--b);border-radius:8px;color:#f0f0f0;font-size:13px;font-family:inherit;padding:7px 10px;flex:1;min-width:0}
+.bsave-cfg{background:var(--g);color:#0a0a0a;border:none;font-size:13px;font-weight:500;padding:9px 18px;border-radius:8px;cursor:pointer;font-family:inherit}
+.admin-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--g);font-size:11px;padding:3px 10px;border-radius:20px;margin-bottom:16px}
+.client-card{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .2s,background .2s}
+.client-card:hover{border-color:var(--g);background:var(--gdim2)}
+.client-avatar{width:38px;height:38px;border-radius:50%;background:var(--gdim);border:1px solid rgba(74,222,128,.2);color:var(--g);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.client-avatar.tennis{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.2);color:#38bdf8}
+.client-info{flex:1}
+.client-info h4{font-size:13px;font-weight:500;margin-bottom:3px}
+.client-info p{font-size:12px;color:var(--m)}
+.type-badge{font-size:10px;padding:2px 8px;border-radius:20px;margin-left:6px}
+.type-badge.mentoria{background:var(--gdim);color:var(--g)}
+.type-badge.tennis{background:rgba(56,189,248,.1);color:#38bdf8}
+.btn-new{background:var(--gdim);border:1px solid rgba(74,222,128,.25);color:var(--g);font-size:13px;padding:10px 16px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit;width:100%;justify-content:center;margin-bottom:16px}
+.admin-editing{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.admin-editing span{font-size:13px;color:var(--g)}
+.btn-back{background:none;border:1px solid var(--b);color:var(--m);font-size:12px;padding:5px 12px;border-radius:8px;cursor:pointer;font-family:inherit}
+.btn-del{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:#f87171;font-size:12px;padding:9px 14px;border-radius:8px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px}
+.btn-view{background:var(--gdim);border:1px solid rgba(74,222,128,.25);color:var(--g);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.met-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.met-card{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:14px 16px}
+.met-lbl{font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.met-val{font-size:28px;font-weight:500;color:var(--g)}
+.met-val.warn{color:#fbbf24}
+.lib-item{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,background .2s}
+.lib-item:hover,.lib-item.sel{border-color:var(--g);background:var(--gdim2)}
+.lib-item-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lib-item h4{font-size:13px;font-weight:500;flex:1}
+.assigned-block{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.assigned-block .ab-info{flex:1}
+.assigned-block h4{font-size:13px;font-weight:500;margin-bottom:2px}
+.assigned-block p{font-size:11px;color:var(--m)}
+.btn-rm{background:none;border:1px solid rgba(248,113,113,.2);color:#f87171;font-size:11px;padding:3px 8px;border-radius:6px;cursor:pointer;font-family:inherit;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div id="access">
+  <div class="acc-logo">Break Point</div>
+  <div class="acc-title" id="accTitle">Tu punto de quiebre</div>
+  <div class="acc-sub" id="accSub">Ingresá tu código de acceso</div>
+  <div class="acc-form" id="stepCode">
+    <label class="acc-lbl">Código</label>
+    <input class="acc-inp" id="codeIn" type="text" placeholder="BP-001" autocomplete="off">
+    <button class="acc-btn" id="btnCode" onclick="doCode()">Continuar</button>
+    <div class="acc-err" id="accErr">Código incorrecto.</div>
+  </div>
+  <div class="acc-form" id="stepPass" style="display:none">
+    <label class="acc-lbl">Contraseña</label>
+    <input class="acc-inp" id="passIn" type="password" placeholder="••••••••">
+    <button class="acc-btn" id="btnPass" onclick="doPass()">Ingresar</button>
+    <div class="acc-err" id="passErr">Contraseña incorrecta.</div>
+    <button class="acc-back" onclick="backCode()">← Volver</button>
+  </div>
+</div>
+
+<div id="main">
+  <div class="preview-bar" id="previewBar">
+    <span><i class="ti ti-eye" style="font-size:14px"></i>Viendo como: <strong id="previewName"></strong></span>
+    <button onclick="exitPreview()">← Volver al admin</button>
+  </div>
+  <div class="topbar">
+    <span class="tb-logo" id="tbLogo">Break Point</span>
+    <div class="tb-right">
+      <span class="tb-name" id="tbName"></span>
+      <button class="tb-out" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+  <nav class="nav" id="mainNav"></nav>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<script>
+var SB='https://becbeuvrqzfvhqkaygbo.supabase.co';
+var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlY2JldXZycXpmdmhxa2F5Z2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5MjQwOTAsImV4cCI6MjA5NTUwMDA5MH0.0bpaBDJKQsIMxowrCA6rcvVBlGLN0I023fIY7S8V7pY';
+var ACODE='BP-ADMIN', APASS='breakpoint2026';
+var DB={}, S={}, isAdmin=false, isPrev=false, editCode=null, curBlkCat='all';
+
+var DEF_PROT=[
+  {icon:'ti-sun',title:'Pre-partido',sub:'Antes de salir a la cancha',steps:['Activación mental: recordá tu palabra clave de entrada competitiva.','Regulación fisiológica: 4 respiraciones profundas, exhalación larga.','Foco intencional: definí un único objetivo de proceso para el partido.','Construí tu entrada: rutina de movimiento + palabra de anclaje.']},
+  {icon:'ti-repeat',title:'Entre puntos',sub:'En el ritmo del partido',steps:['Reset emocional: girá la raqueta, mirá las cuerdas, respiración corta.','Lenguaje interno neutro: ni crítica ni exceso de análisis.','Foco atencional: definí dónde va tu próxima pelota antes de servir.','Ritmo constante: mismo tiempo entre puntos, ganés o pierdas.']},
+  {icon:'ti-arrow-back-up',title:'Post-error',sub:'Después del error',steps:['Cortocircuito inmediato: gesto físico de corte (palma abierta, raqueta abajo).','Respiración de reset: una sola exhalación lenta y controlada.','Frase de reconstrucción: tu frase personal de claridad.','Siguiente punto limpio: entrá sin memoria del error anterior.']},
+  {icon:'ti-trophy',title:'Cierre',sub:'Cuando se define el partido',steps:['Presión como señal: reconocé la tensión sin amplificarla.','Reducí el foco: una sola pelota, un solo punto.','Rutina de saque bajo presión: más lenta, más deliberada.','Jugá tu tenis, no el marcador: ejecutá como en el primer game.']}
+];
+
+var DEF_ENT=[
+  {title:'Sesión inicial de diagnóstico',desc:'Análisis de patrones mentales, bloqueos y triggers competitivos',status:'pending',lbl:'Pendiente'},
+  {title:'Mapa de bloqueo personalizado',desc:'Documento con detonantes, respuestas automáticas y comportamientos bajo presión',status:'pending',lbl:'Pendiente'},
+  {title:'Análisis de partidos',desc:'Revisión de grabaciones y audio para identificar patrones',status:'pending',lbl:'Pendiente'},
+  {title:'Auditorías post-torneo',desc:'Análisis estructurado después de cada torneo',status:'pending',lbl:'Pendiente'},
+  {title:'Sesiones 1:1',desc:'Sesión de monitoreo con simulación competitiva + sesión de cierre',status:'pending',lbl:'Pendiente'},
+  {title:'Soporte directo',desc:'Regulación competitiva entre partidos y torneos vía WhatsApp',status:'pending',lbl:'Pendiente'}
+];
+
+var LIBRARY=[
+  {id:'m1',cat:'mental',title:'"Soy malo para esto": la trampa de la conclusión rápida',level:'Principiante',video:'https://www.youtube.com/embed/Xxby9y8UHZU',body:'"Soy malo para el saque". "Esto no es para mí". Esas frases no son evaluaciones reales — son reacciones emocionales disfrazadas de conclusiones.\n\nHay una diferencia enorme entre "ese golpe no me salió" y "soy un desastre para ese golpe". La primera es información. La segunda es una sentencia que te cierra.\n\n🤔 Antes de ver el video:\n• ¿En qué golpe sos más duro/a con vos mismo/a?\n• ¿Qué te decís cuando algo no te sale? ¿Observación o sentencia?\n• ¿Le hablarías a un amigo de la misma forma?\n\n✅ Consigna: Cuando tu cabeza dispare una etiqueta negativa → reconocé el pensamiento → reemplazalo por una observación → elegí UNA sola corrección concreta.'},
+  {id:'m2',cat:'mental',title:'El aprendizaje no es una línea recta',level:'Principiante',video:'https://www.youtube.com/embed/Lof7FGpu0zo',body:'La semana pasada el drive te salía bien, y esta semana parece que lo olvidaste. Primera reacción: "retrocedí".\n\nPero probablemente no retrocediste. Estás en una meseta o en una reorganización. Así funciona el aprendizaje motor — no es una línea que sube de forma constante.\n\n🤔 Respondé:\n• ¿Hubo algún momento donde sentiste que retrocediste? ¿Qué pasó después?\n• ¿Podés nombrar 3 cosas que hoy hacés mejor que hace 2 meses?\n\n✅ Consigna: Esta semana, después de cada clase anotá: 1 cosa que mejoró + 1 cosa que está en proceso.'},
+  {id:'m3',cat:'mental',title:'La meseta: cuando el progreso se vuelve invisible',level:'Intermedio',video:'https://www.youtube.com/embed/wC9HD-k-M04',body:'Al principio todo sube rápido. Y después parece que todo se frenó. Esa etapa tiene nombre: meseta de aprendizaje.\n\nLa meseta no es un freno — es donde se consolida todo lo que aprendiste. El error más común es pensar que hay que cambiar todo.\n\n🤔 Respondé:\n• ¿Sentís que estás en una meseta ahora mismo?\n• ¿Qué te ayudaría a mantenerte motivado/a cuando no ves resultados claros?\n\n✅ Consigna: Esta semana, en lugar de evaluar si "mejoraste", preguntate: ¿estuve presente y lo intenté? Si la respuesta es sí, la clase fue exitosa.'},
+  {id:'m4',cat:'mental',title:'La impaciencia: querer en 3 clases lo que lleva meses',level:'Principiante',video:'https://www.youtube.com/embed/eFe4uXXxYyM',body:'El tenis es uno de los deportes técnicamente más complejos. La impaciencia no es un defecto de carácter — es una reacción muy humana. Pero tiene un costo: te saca del presente. Y en el tenis, el único lugar donde podés mejorar es en el presente.\n\n🤔 Respondé:\n• ¿Cuántas clases llevás? ¿Qué esperabas lograr para este momento?\n• ¿Esa expectativa era realista?\n\n✅ Consigna: Antes de tu próxima clase, escribí en el celular UNA expectativa concreta y alcanzable. Solo una.'},
+  {id:'m5',cat:'mental',title:'El cuerpo que no obedece',level:'Principiante',video:'https://www.youtube.com/embed/N5iBQDQ2iCY',body:'Sabés exactamente cómo tiene que salir el golpe. Y sin embargo, cuando intentás ejecutarlo, el cuerpo hace otra cosa. Eso es frustrante. Y muy normal.\n\nHay una brecha que existe siempre entre entender algo con la mente y poder hacerlo con el cuerpo. Esa brecha se cierra con repetición, no con más explicaciones.\n\n🤔 Respondé:\n• ¿Hay algún golpe donde la mente entiende pero el cuerpo no acompaña?\n• ¿Alguna vez un golpe "apareció solo" después de varios intentos sin forzarlo?\n\n✅ Consigna: Cuando un golpe no salga, pausá 3 segundos, respirá, y preguntate: "¿qué UNA cosa podría cambiar?"'},
+  {id:'m6',cat:'mental',title:'El miedo a quedar en ridículo',level:'Principiante',video:'https://www.youtube.com/embed/Xxby9y8UHZU',body:'El miedo a que los otros te vean fallar te tensa. Y esa tensión hace que salgan peor los golpes que estabas intentando hacer bien.\n\nAlgo que vale la pena saber: los demás alumnos están tan metidos en sus propios golpes que no tienen espacio mental para mirarte.\n\n🤔 Respondé:\n• ¿Hay alguna situación donde te tensás más por lo que piensan los demás?\n• ¿Qué harías diferente si supieras que nadie te está mirando?\n\n✅ Consigna: Elegí un momento donde normalmente te tensás. Respirá, aflojá los hombros, y jugá como si estuvieras solo/a en la cancha.'},
+  {id:'m7',cat:'mental',title:'El diálogo interno: lo que te decís importa',level:'Principiante',video:'https://www.youtube.com/embed/eFe4uXXxYyM',body:'Hay una conversación que ocurre en silencio cada vez que jugás. "Siempre me pasa lo mismo", "qué desastre", "nunca voy a aprender esto" — cada una de esas frases aumenta la tensión muscular y reduce la concentración.\n\n🤔 Respondé:\n• ¿Cuáles son las frases que más repetís cuando algo no te sale?\n• ¿Son frases que le dirías a un amigo en la misma situación?\n\n✅ Consigna: Elegí UNA frase corta para usarte cuando algo no sale. Que sea tuya y real. Puede ser "siguiente punto", "ya lo tengo", o "tranquilo/a".'},
+  {id:'m8',cat:'mental',title:'La comparación con otros alumnos',level:'Principiante',video:'',body:'Mirás a otro alumno y automáticamente te comparás. Lo que la comparación no te muestra: cuánto practica esa persona fuera de clase, qué experiencia deportiva previa tiene, cuántas horas lleva en total.\n\nTu único punto de comparación válido sos vos mismo/a.\n\n🤔 Respondé:\n• ¿Con quién te comparás más seguido? ¿Por qué esa persona?\n• Si te compararas solo con vos mismo/a de hace 2 meses, ¿qué verías?\n\n✅ Consigna: Al final de tu próxima clase, escribí UNA sola cosa que hiciste mejor que la clase anterior.'},
+  {id:'m9',cat:'mental',title:'Confiar en el cuerpo: soltar para jugar mejor',level:'Intermedio',video:'https://www.youtube.com/embed/v6OUZZf8JeI',body:'Ya mecanizaste los golpes básicos. Y justo ahí, muchos alumnos empiezan a jugar peor. ¿Por qué? Porque la cabeza no quiere soltarse.\n\nTimothy Gallwey lo llama "la interferencia del yo": la voz interna que comenta y corrige mientras el cuerpo intenta ejecutar. Tu cuerpo ya sabe. El trabajo ahora es aprender a confiar en lo que ya incorporó.\n\n🤔 Respondé:\n• ¿Hay algún golpe que "se va solo" cuando no pensás en él pero se arruina cuando lo analizás?\n\n✅ Consigna en cancha: Durante 10 minutos, jugá con esta sola instrucción: mirá solo la pelota. No el brazo ni la muñeca. Solo la pelota.'},
+  {id:'m10',cat:'mental',title:'El día malo no borra lo que ya sabés',level:'Todos',video:'https://www.youtube.com/embed/wC9HD-k-M04',body:'Llegás a clase y nada sale. Y tu cabeza dispara: "Se me olvidó todo".\n\nLo que aprendiste no desaparece en una semana. Lo que cambia es tu estado — el nivel de descanso, la tensión del día, el ánimo. El tenis amplifica cómo llegás a la cancha.\n\nEl día malo no es una regresión. Es solo un día malo.\n\n🤔 Respondé:\n• ¿Cómo llegaste a la clase donde todo salió mal?\n• ¿Qué te decís cuando tenés un día malo? ¿Te ayuda o te hunde más?\n\n✅ Consigna: La próxima vez que tengas un día malo, escribí: 1) ¿Cómo llegué hoy? 2) ¿Qué UNA cosa sí me salió? 3) ¿Qué voy a hacer diferente la próxima vez?'},
+  {id:'v1',cat:'movilidad',title:'Movilidad de hombro y brazo de golpe',level:'Todos',video:'',body:'El hombro es la articulación que más trabaja en el tenis. Movilizarla antes de jugar reduce el riesgo de lesión y mejora la soltura del swing.\n\n1️⃣ Círculos de hombro — hacia adelante 30 seg, luego hacia atrás 30 seg.\n2️⃣ Rotación interna y externa — codo a 90°, 15 reps por lado.\n3️⃣ Péndulo de brazo — brazo colgando relajado, oscilá suavemente 30 seg por lado.\n4️⃣ Estiramiento de pectoral en pared — palma apoyada, girá el cuerpo 30 seg por lado.\n\n🤔 ¿Hacés algún calentamiento antes de clase o arrancás directo?'},
+  {id:'v2',cat:'movilidad',title:'Cadera y rotación de tronco',level:'Todos',video:'',body:'La potencia en el tenis no viene del brazo — viene de la rotación de cadera y tronco.\n\n1️⃣ Rotación de cadera de pie — círculos amplios, 10 veces por lado.\n2️⃣ Estocada con rotación — rotá el tronco hacia el lado de la pierna adelantada, 8 reps por lado.\n3️⃣ Rotación de tronco sentado — piernas cruzadas, manos detrás de la cabeza, 15 veces.\n4️⃣ Bisagra de cadera — empujá las caderas hacia atrás manteniendo el pecho al frente, 10 reps.\n\n🤔 ¿Sentís que el movimiento sale más del brazo o del cuerpo?'},
+  {id:'v3',cat:'movilidad',title:'Tren inferior y desplazamiento',level:'Todos',video:'',body:'El tenis se juega con las piernas. La capacidad de llegar rápido a la pelota depende de la movilidad del tren inferior.\n\n1️⃣ Sentadilla profunda con pausa — bajá lento, pausá 3 seg, subí. 10 reps.\n2️⃣ Estiramiento de isquiotibiales — pierna apoyada en silla, inclinás el tronco. 30 seg por lado.\n3️⃣ Mariposa dinámica — plantas juntas, rodillas arriba y abajo. 30 seg.\n4️⃣ Pasos laterales con pausa — 5 pasos, pausa en guardia, 5 pasos. 3 series.\n\n🤔 ¿Llegás cómodo/a a las pelotas que van lejos?'},
+  {id:'v4',cat:'movilidad',title:'Muñeca y antebrazo',level:'Todos',video:'',body:'La muñeca absorbe mucho impacto en el tenis. Mantenerla móvil previene lesiones y mejora el control.\n\n1️⃣ Círculos de muñeca — 15 veces hacia cada lado.\n2️⃣ Estiramiento de flexores — palma hacia arriba, empujá los dedos hacia abajo. 30 seg por lado.\n3️⃣ Estiramiento de extensores — palma hacia abajo, empujá los dedos hacia abajo. 30 seg por lado.\n4️⃣ Pronación y supinación — rotá el antebrazo hacia arriba y hacia abajo. 15 reps lentas por lado.\n\n🤔 ¿Sentís tensión en la muñeca después de las clases?'},
+  {id:'v5',cat:'movilidad',title:'Rutina completa pre-clase (15 min)',level:'Todos',video:'',body:'Combiná los 4 módulos anteriores en esta secuencia antes de cualquier clase:\n\n1. Círculos de hombro — 1 min\n2. Rotación de cadera — 1 min\n3. Estocada con rotación — 8 reps por lado\n4. Pasos laterales con pausa — 3 series\n5. Círculos de muñeca — 30 seg\n6. Estiramiento de flexores y extensores — 30 seg por lado\n7. Péndulo de brazo — 30 seg por lado\n8. Sentadilla profunda — 10 reps\n9. Mariposa dinámica — 30 seg\n\n✅ Hacela antes de tus próximas 3 clases y anotá cómo se sintió el cuerpo al arrancar.'},
+  {id:'d1',cat:'drill',title:'Control de profundidad en el frontón',level:'Intermedio',video:'',body:'Objetivo: consistencia y control de profundidad en drive y revés.\nDónde: Frontón. Duración: 15-20 min.\n\nMarcá una línea en la pared a ~90cm. Ponete a ~12 metros.\n\nSerie 1 — Solo drive: Meta 20 seguidas en esa zona.\nSerie 2 — Solo revés: Meta 20 seguidas.\nSerie 3 — Alternado: drive, revés, drive, revés. Meta: 15 alternados sin perder control.\n\n🤔 ¿Llegaste a la meta? ¿Notaste algún patrón en los errores?'},
+  {id:'d2',cat:'drill',title:'Topspin progresivo en el frontón',level:'Intermedio',video:'',body:'Objetivo: incorporar y afianzar el topspin en el drive.\nDónde: Frontón. Duración: 15 min.\n\n• 5 min: ritmo lento, topspin suave\n• 5 min: ritmo medio, más rotación\n• 5 min: más potencia manteniendo el topspin\n\n✅ Señal de que está saliendo: la pelota golpea más arriba en la pared y baja rápido.\n❌ Señal de que no está saliendo: la pelota va demasiado plana o se va por arriba.\n\n🤔 ¿A qué velocidad te resultó más fácil mantener el topspin?'},
+  {id:'d3',cat:'drill',title:'Volea en el frontón',level:'Intermedio',video:'',body:'Objetivo: mejorar reflejos y timing de la volea.\nDónde: Frontón. Duración: 15 min.\n\nAcercate a 3-4 metros de la pared.\n\nSerie 1 — Volea de drive: 5 min.\nSerie 2 — Volea de revés: 5 min.\nSerie 3 — Alternado: 5 min.\n\n🔑 Clave: la volea se bloquea, no se pega. El brazo hace poco movimiento.\n\n🤔 ¿Cuál volea te salió más natural?'},
+  {id:'d4',cat:'drill',title:'Peloteo cruzado y paralelo con compañero',level:'Intermedio',video:'',body:'Objetivo: trabajar direcciones, consistencia y construcción del punto.\nDónde: Cancha completa. Duración: 30-40 min.\n\nBloque 1 — Solo cruzados (15 min): mantener el peloteo lo más largo posible.\nBloque 2 — Solo paralelos (10 min): más difícil, mayor margen de red.\nBloque 3 — Libre con regla (15 min): mínimo 4 pelotazos antes de intentar ganar.\n\n🤔 ¿Cuál dirección te resultó más cómoda?'},
+  {id:'d5',cat:'drill',title:'Saque + primer golpe',level:'Avanzado',video:'',body:'Objetivo: conectar el saque con la construcción del punto.\nDónde: Cancha completa. Duración: 20-30 min.\n\nRol A — El que saca: busca siempre el cruzado como primer golpe.\nRol B — El que resta: puede jugar libre desde el primer golpe.\n\nJuegan 10 puntos, cambian de rol.\n\n⚡ Variante avanzada: saque-volea. El que resta intenta pasar o hacer el lob.\n\n🤔 ¿Tu saque te deja en buena posición para jugar el primer golpe?'},
+  {id:'d6',cat:'drill',title:'Juego desde el fondo con objetivo táctico',level:'Avanzado',video:'',body:'Objetivo: construir el punto con un criterio claro.\nDónde: Cancha completa. Duración: 30 min.\n\nRonda 1: Gana quien mueva al rival de su posición central.\nRonda 2: Solo se puede ganar con pelota corta después de 3 pelotas largas.\nRonda 3: Juego libre aplicando lo trabajado.\n\n🤔 ¿Lograste mover a tu compañero o te quedaste peloteando al centro?'}
+];
+
+function sbFetch(path,opts){
+  opts=opts||{};
+  var h={'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+  if(opts.headers) Object.assign(h,opts.headers);
+  return fetch(SB+'/rest/v1/'+path,{method:opts.method||'GET',headers:h,body:opts.body})
+    .then(function(r){return r.text().then(function(t){return{ok:r.ok,status:r.status,text:t};});})
+    .then(function(res){
+      if(!res.ok){console.error('SB',res.status,res.text);return null;}
+      try{return res.text?JSON.parse(res.text):[];}catch(e){return[];}
+    }).catch(function(e){console.error('fetch',e);return null;});
+}
+
+function calcDay(sd){
+  if(!sd) return 1;
+  var s=new Date(sd+'T00:00:00'),t=new Date();t.setHours(0,0,0,0);
+  return Math.min(Math.max(Math.floor((t-s)/86400000)+1,1),90);
+}
+function defPass(name){return name.split(' ')[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+
+function getClient(code){
+  var c=DB[code]; if(!c) return null;
+  return {code:c.code,name:c.name,startDate:c.startDate,pass:c.pass||defPass(c.name),
+    type:c.type||'mentoria',fase:c.fase||1,day:calcDay(c.startDate),
+    prots:c.prots?JSON.parse(JSON.stringify(c.prots)):JSON.parse(JSON.stringify(DEF_PROT)),
+    ents:c.ents?JSON.parse(JSON.stringify(c.ents)):JSON.parse(JSON.stringify(DEF_ENT)),
+    refs:c.refs||[],blocks:c.blocks||[]};
+}
+
+function loadAll(){
+  return sbFetch('clients?select=*').then(function(rows){
+    if(!rows) return;
+    DB={};
+    rows.forEach(function(r){
+      DB[r.code]={code:r.code,name:r.name,startDate:r.start_date,pass:r.pass||null,
+        type:r.type||'mentoria',fase:r.fase||1,ents:r.ents||null,prots:r.prots||null,refs:[],blocks:[]};
+    });
+    var loads=Object.keys(DB).map(function(c){return loadRefs(c);});
+    return Promise.all(loads);
+  });
+}
+function loadRefs(code){
+  return sbFetch('reflections?client_code=eq.'+code+'&order=created_at.asc').then(function(rows){
+    if(!rows||!DB[code]) return;
+    DB[code].refs=rows.map(function(r){return{tipo:r.tipo,fecha:r.fecha,res:r.resultado,int:r.intensidad,mental:r.mental,apr:r.aprendizaje};});
+  });
+}
+function loadBlocks(code){
+  return sbFetch('blocks?client_code=eq.'+code+'&order=order_index.asc').then(function(rows){
+    if(!rows||!DB[code]) return;
+    DB[code].blocks=rows;
+  });
+}
+function saveClientDB(c){
+  return sbFetch('clients',{method:'POST',
+    headers:{'Prefer':'resolution=merge-duplicates,return=representation'},
+    body:JSON.stringify({code:c.code,name:c.name,start_date:c.startDate,
+      pass:c.pass||defPass(c.name),type:c.type||'mentoria',fase:c.fase||1,
+      ents:c.ents||null,prots:c.prots||null})});
+}
+function saveRefDB(code,r){
+  return sbFetch('reflections',{method:'POST',
+    body:JSON.stringify({client_code:code,tipo:r.tipo,fecha:r.fecha,resultado:r.res,intensidad:r.int,mental:r.mental,aprendizaje:r.apr})});
+}
+function addBlockDB(b){return sbFetch('blocks',{method:'POST',body:JSON.stringify(b)});}
+function updateBlockDB(id,data){return sbFetch('blocks?id=eq.'+id,{method:'PATCH',body:JSON.stringify(data)});}
+function delBlockDB(id){return sbFetch('blocks?id=eq.'+id,{method:'DELETE'});}
+function delClientDB(code){return sbFetch('clients?code=eq.'+code,{method:'DELETE'});}
+
+// ACCESS
+window.addEventListener('load',function(){
+  document.getElementById('access').style.display='flex';
+  document.getElementById('codeIn').addEventListener('keydown',function(e){if(e.key==='Enter') doCode();});
+  document.getElementById('passIn').addEventListener('keydown',function(e){if(e.key==='Enter') doPass();});
+});
+
+function doCode(){
+  var c=document.getElementById('codeIn').value.trim().toUpperCase();
+  document.getElementById('accErr').style.display='none';
+  if(!c) return;
+  if(c===ACODE){
+    document.getElementById('stepCode').style.display='none';
+    document.getElementById('stepPass').style.display='block';
+    document.getElementById('accTitle').textContent='Acceso admin';
+    document.getElementById('accSub').textContent='Ingresá tu contraseña';
+    document.getElementById('passIn').focus(); return;
+  }
+  var btn=document.getElementById('btnCode');
+  btn.textContent='Verificando...'; btn.disabled=true;
+  sbFetch('clients?code=eq.'+c+'&select=*').then(function(rows){
+    btn.textContent='Continuar'; btn.disabled=false;
+    if(rows&&rows.length>0){
+      var r=rows[0];
+      DB[c]={code:r.code,name:r.name,startDate:r.start_date,pass:r.pass||null,
+        type:r.type||'mentoria',fase:r.fase||1,ents:r.ents||null,prots:r.prots||null,refs:[],blocks:[]};
+      document.getElementById('stepCode').style.display='none';
+      document.getElementById('stepPass').style.display='block';
+      document.getElementById('accTitle').textContent='Hola, '+r.name.split(' ')[0];
+      document.getElementById('accSub').textContent='Ingresá tu contraseña';
+      document.getElementById('passIn').value=''; document.getElementById('passIn').focus();
+    } else {document.getElementById('accErr').style.display='block';}
+  });
+}
+
+function doPass(){
+  var p=document.getElementById('passIn').value;
+  document.getElementById('passErr').style.display='none';
+  var c=document.getElementById('codeIn').value.trim().toUpperCase();
+  if(c===ACODE){
+    if(p!==APASS){document.getElementById('passErr').style.display='block';return;}
+    var btn=document.getElementById('btnPass');
+    btn.textContent='Cargando...'; btn.disabled=true;
+    loadAll().then(function(){
+      btn.textContent='Ingresar'; btn.disabled=false;
+      isAdmin=true; S={}; enterMain(true);
+    }); return;
+  }
+  var client=DB[c]; if(!client){document.getElementById('passErr').style.display='block';return;}
+  if(p!==(client.pass||defPass(client.name))){document.getElementById('passErr').style.display='block';return;}
+  var btn=document.getElementById('btnPass');
+  btn.textContent='Cargando...'; btn.disabled=true;
+  var loads=[loadRefs(c)];
+  if((client.type||'mentoria')==='tennis') loads.push(loadBlocks(c));
+  Promise.all(loads).then(function(){
+    btn.textContent='Ingresar'; btn.disabled=false;
+    isAdmin=false; S=getClient(c); enterMain(false);
+  });
+}
+
+function backCode(){
+  document.getElementById('stepPass').style.display='none';
+  document.getElementById('stepCode').style.display='block';
+  document.getElementById('accTitle').textContent='Tu punto de quiebre';
+  document.getElementById('accSub').textContent='Ingresá tu código de acceso';
+  document.getElementById('passIn').value=''; document.getElementById('passErr').style.display='none';
+}
+
+function enterMain(admin){
+  document.getElementById('access').style.display='none';
+  document.getElementById('main').style.display='block';
+  document.getElementById('tbName').textContent=admin?'Coach JC':(S.name||'');
+  buildNav(); buildContent();
+  if(admin){go('admin');showList();}
+  else go('home');
+}
+
+function doLogout(){
+  isAdmin=false; isPrev=false; S={}; DB={};
+  document.getElementById('main').style.display='none';
+  document.getElementById('previewBar').style.display='none';
+  document.getElementById('access').style.display='flex';
+  document.getElementById('stepCode').style.display='block';
+  document.getElementById('stepPass').style.display='none';
+  document.getElementById('codeIn').value=''; document.getElementById('passIn').value='';
+  document.getElementById('accTitle').textContent='Tu punto de quiebre';
+  document.getElementById('accSub').textContent='Ingresá tu código de acceso';
+  document.getElementById('accErr').style.display='none'; document.getElementById('passErr').style.display='none';
+}
+
+function buildNav(){
+  var type=S.type||'mentoria';
+  var nav=document.getElementById('mainNav');
+  var logoEl=document.getElementById('tbLogo');
+  if(isAdmin&&!isPrev){
+    logoEl.textContent='Break Point';
+    nav.innerHTML='<button class="nb on" onclick="go(\'home\')"><i class="ti ti-home"></i>Inicio</button>'+
+      '<button class="nb" onclick="go(\'timeline\')"><i class="ti ti-calendar"></i>Timeline</button>'+
+      '<button class="nb" onclick="go(\'ref\')"><i class="ti ti-notebook"></i>Reflexiones</button>'+
+      '<button class="nb" onclick="go(\'prot\')"><i class="ti ti-brain"></i>Protocolos</button>'+
+      '<button class="nb" onclick="go(\'ent\')"><i class="ti ti-package"></i>Entregables</button>'+
+      '<button class="nb" onclick="go(\'admin\')"><i class="ti ti-shield"></i>Admin</button>';
+  } else if(type==='mentoria'){
+    logoEl.textContent='Break Point — Mentoría de Rendimiento Competitivo';
+    nav.innerHTML='<button class="nb on" onclick="go(\'home\')"><i class="ti ti-home"></i>Inicio</button>'+
+      '<button class="nb" onclick="go(\'timeline\')"><i class="ti ti-calendar"></i>Timeline</button>'+
+      '<button class="nb" onclick="go(\'ref\')"><i class="ti ti-notebook"></i>Reflexiones</button>'+
+      '<button class="nb" onclick="go(\'prot\')"><i class="ti ti-brain"></i>Protocolos</button>'+
+      '<button class="nb" onclick="go(\'ent\')"><i class="ti ti-package"></i>Entregables</button>';
+  } else {
+    logoEl.textContent='Break Point';
+    nav.innerHTML='<button class="nb on" onclick="go(\'home\')"><i class="ti ti-home"></i>Inicio</button>'+
+      '<button class="nb" onclick="go(\'actividades\')"><i class="ti ti-activity"></i>Mis actividades</button>';
+  }
+}
+
+function buildContent(){
+  var type=S.type||'mentoria';
+  var c=document.getElementById('mainContent');
+  if(isAdmin&&!isPrev){
+    c.innerHTML=mentoriaScreens()+tennisScreens()+adminScreen();
+  } else if(type==='mentoria'){
+    c.innerHTML=mentoriaScreens();
+  } else {
+    c.innerHTML=tennisScreens();
+  }
+  buildDots(); upHome();
+  if(type==='mentoria'||isAdmin) showProt(0);
+  if(type==='tennis') renderBlocks();
+  if(isAdmin&&!isPrev) renderTL();
+}
+
+function mentoriaScreens(){
+  return '<div id="scr-home" class="scr on">'+
+    '<div class="home-hi"><h2 id="hGreet">Buen día</h2><p id="hSub">Mentoría Break Point — 90 días</p></div>'+
+    '<div class="prog-block"><div class="prog-top"><span class="prog-lbl">Progreso</span><span class="prog-day" id="hDay">—</span></div>'+
+    '<div class="prog-bg"><div class="prog-fill" id="hBar" style="width:0%"></div></div>'+
+    '<div class="prog-sub"><span>Inicio</span><span id="hPct">0%</span><span>Día 90</span></div>'+
+    '<div class="prog-dates"><span id="hStart">—</span><span id="hEnd">—</span></div></div>'+
+    '<div class="qgrid">'+
+    '<div class="qcard" onclick="go(\'ref\');setTimeout(function(){var f=document.getElementById(\'rForm\');if(f)f.style.display=\'block\'},50)"><i class="ti ti-pencil"></i><h3>Nueva reflexión</h3><p>Registrá tu último partido</p></div>'+
+    '<div class="qcard" onclick="go(\'prot\')"><i class="ti ti-brain"></i><h3>Mis protocolos</h3><p>Pre-partido, entre puntos...</p></div>'+
+    '<div class="qcard" onclick="go(\'timeline\')"><i class="ti ti-calendar"></i><h3>Mi proceso</h3><p>Las 3 fases de la mentoría</p></div>'+
+    '<div class="qcard" onclick="go(\'ent\')"><i class="ti ti-package"></i><h3>Entregables</h3><p id="hEntTxt">—</p></div></div></div>'+
+    '<div id="scr-timeline" class="scr"><div class="sh"><span class="st">Mi proceso — 90 días</span></div><div id="tlContent"></div></div>'+
+    '<div id="scr-ref" class="scr"><div class="sh"><span class="st">Reflexiones</span><button class="badd" onclick="toggleRef()"><i class="ti ti-plus"></i>Nueva</button></div>'+
+    '<div id="rForm" class="fp" style="display:none">'+
+    '<div class="fg3"><div class="fr"><label class="fl">Tipo</label><select class="fsel" id="rTipo"><option>Partido</option><option>Torneo</option><option>Entrenamiento</option></select></div>'+
+    '<div class="fr"><label class="fl">Fecha</label><input type="date" class="fi" id="rFecha"></div>'+
+    '<div class="fr"><label class="fl">Resultado</label><select class="fsel" id="rRes"><option>Victoria</option><option>Derrota</option><option>Sin resultado</option></select></div></div>'+
+    '<div class="fr"><label class="fl">Intensidad mental (1–10)</label>'+
+    '<div class="introw"><input type="range" min="1" max="10" value="5" step="1" id="rInt" oninput="upInt(this.value)"><span class="intval" id="intVal">5</span></div>'+
+    '<div class="idots" id="iDots"></div></div>'+
+    '<div class="fr"><label class="fl">¿Qué pasó mentalmente?</label><textarea class="fta" id="rMental" placeholder="Describilo lo más honestamente posible..."></textarea></div>'+
+    '<div class="fr"><label class="fl">¿Qué aprendí?</label><textarea class="fta" id="rApr" placeholder="Una o más conclusiones concretas..."></textarea></div>'+
+    '<button class="bsave" onclick="doSaveRef()">Guardar reflexión</button></div><div id="rList"></div></div>'+
+    '<div id="scr-prot" class="scr"><div class="sh"><span class="st">Protocolos competitivos</span></div>'+
+    '<div class="ptabs"><button class="ptab on" onclick="showProt(0,this)">Pre-partido</button><button class="ptab" onclick="showProt(1,this)">Entre puntos</button><button class="ptab" onclick="showProt(2,this)">Post-error</button><button class="ptab" onclick="showProt(3,this)">Cierre</button></div>'+
+    '<div id="protContent"></div></div>'+
+    '<div id="scr-ent" class="scr"><div class="sh"><span class="st">Entregables</span><span style="font-size:12px;color:var(--m)" id="entCount">—</span></div><div id="entList"></div></div>';
+}
+
+function tennisScreens(){
+  return '<div id="scr-home" class="scr on">'+
+    '<div class="home-hi"><h2 id="hGreet">Buen día</h2><p>Entrenamiento mental y físico</p></div>'+
+    '<div class="prog-block">'+
+    '<div style="font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Mis actividades</div>'+
+    '<div id="hBlkSummary" style="font-size:28px;font-weight:500;color:var(--g)">—</div>'+
+    '<div style="font-size:12px;color:var(--m);margin-top:4px">actividades completadas</div></div>'+
+    '<div class="qgrid">'+
+    '<div class="qcard" onclick="go(\'actividades\');setTimeout(function(){setBlkCat(\'mental\',document.querySelector(\'.blk-tab[data-cat=mental]\'))},50)"><i class="ti ti-brain"></i><h3>Entrenamiento mental</h3><p>Módulos psicológicos</p></div>'+
+    '<div class="qcard" onclick="go(\'actividades\');setTimeout(function(){setBlkCat(\'movilidad\',document.querySelector(\'.blk-tab[data-cat=movilidad]\'))},50)"><i class="ti ti-run"></i><h3>Movilidad</h3><p>Fuera de la cancha</p></div>'+
+    '<div class="qcard" onclick="go(\'actividades\');setTimeout(function(){setBlkCat(\'drill\',document.querySelector(\'.blk-tab[data-cat=drill]\'))},50)"><i class="ti ti-tennis"></i><h3>Drills</h3><p>Frontón y peloteo</p></div>'+
+    '<div class="qcard" onclick="go(\'actividades\')"><i class="ti ti-list-check"></i><h3>Ver todo</h3><p>Todas mis actividades</p></div></div></div>'+
+    '<div id="scr-actividades" class="scr">'+
+    '<div class="sh"><span class="st">Mis actividades</span></div>'+
+    '<div class="blk-cat-tabs">'+
+    '<button class="blk-tab on" data-cat="all" onclick="setBlkCat(\'all\',this)">Todas</button>'+
+    '<button class="blk-tab" data-cat="mental" onclick="setBlkCat(\'mental\',this)">🧠 Mental</button>'+
+    '<button class="blk-tab" data-cat="movilidad" onclick="setBlkCat(\'movilidad\',this)">🤸 Movilidad</button>'+
+    '<button class="blk-tab" data-cat="drill" onclick="setBlkCat(\'drill\',this)">🎾 Drills</button></div>'+
+    '<div id="blkList"></div></div>';
+}
+
+function adminScreen(){
+  return '<div id="scr-admin" class="scr">'+
+    '<div class="sh"><span class="st">Panel de administración</span></div>'+
+    '<div class="admin-badge"><i class="ti ti-shield" style="font-size:13px"></i>Modo admin</div>'+
+    '<div class="met-grid">'+
+    '<div class="met-card"><div class="met-lbl">Clientes activos</div><div class="met-val" id="metTotal">—</div></div>'+
+    '<div class="met-card"><div class="met-lbl">Promedio día</div><div class="met-val" id="metAvg">—</div></div>'+
+    '<div class="met-card"><div class="met-lbl">Terminando pronto</div><div class="met-val warn" id="metEnd">—</div></div></div>'+
+    '<div style="background:var(--s);border:1px solid var(--b);border-radius:12px;padding:14px 16px;margin-bottom:14px">'+
+    '<div style="font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Progreso por jugador</div><div id="metBars"></div></div>'+
+    '<div style="background:var(--s);border:1px solid var(--b);border-radius:12px;padding:14px 16px;margin-bottom:20px">'+
+    '<div style="font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Reflexiones registradas</div><div id="metRefs"></div></div>'+
+    '<div id="adminMain">'+
+    '<button class="btn-new" onclick="showNew()"><i class="ti ti-plus"></i>Agregar nuevo cliente</button>'+
+    '<div id="clientList"></div></div>'+
+    '<div id="adminNew" style="display:none">'+
+    '<div class="sh"><span class="st" style="font-size:14px">Nuevo cliente</span><button class="btn-back" onclick="showList()">← Volver</button></div>'+
+    '<div class="fp">'+
+    '<div class="fg2"><div class="fr"><label class="fl">Nombre completo</label><input class="fi" id="nwName" placeholder="Ej: Juan Pérez"></div>'+
+    '<div class="fr"><label class="fl">Código de acceso</label><input class="fi" id="nwCode" placeholder="Ej: BP-003"></div></div>'+
+    '<div class="fg2"><div class="fr"><label class="fl">Tipo de usuario</label><select class="fsel" id="nwType"><option value="mentoria">Mentoría</option><option value="tennis">Alumno de tenis</option></select></div>'+
+    '<div class="fr"><label class="fl">Contraseña (opcional)</label><input class="fi" id="nwPass" placeholder="Default: primer nombre en minúscula"></div></div>'+
+    '<div class="fr"><label class="fl">Fecha de inicio</label><input type="date" class="fi" id="nwStart"></div>'+
+    '<button class="bsave" onclick="createClient()">Crear cliente</button>'+
+    '<p id="nwErr" style="font-size:12px;color:#f87171;margin-top:8px;display:none"></p></div></div>'+
+    '<div id="adminEdit" style="display:none">'+
+    '<div class="admin-editing"><span id="editLbl">Editando: —</span><button class="btn-back" onclick="showList()">← Todos</button></div>'+
+    '<div class="csec"><h3>Perfil</h3>'+
+    '<div class="crow"><label>Nombre</label><input class="ci" id="cfgName"></div>'+
+    '<div class="crow"><label>Código</label><input class="ci" id="cfgCode" disabled style="opacity:.5"></div>'+
+    '<div class="crow"><label>Tipo</label><select class="ci" id="cfgType" onchange="onTypeChange()"><option value="mentoria">Mentoría</option><option value="tennis">Alumno de tenis</option></select></div>'+
+    '<div class="crow"><label>Contraseña</label><input class="ci" id="cfgPass"></div></div>'+
+    '<div class="csec"><h3>Proceso</h3>'+
+    '<div class="crow"><label>Fecha de inicio</label><input type="date" class="ci" id="cfgStart"></div>'+
+    '<div class="crow"><label>Día actual</label><span style="font-size:13px;color:var(--g);font-weight:500" id="cfgDayTxt">—</span></div>'+
+    '<div class="crow" id="cfgFaseRow"><label>Fase actual</label>'+
+    '<select class="ci" id="cfgFase">'+
+    '<option value="1">Fase 1 — Recuperar claridad mental</option>'+
+    '<option value="2">Fase 2 — Estabilidad competitiva</option>'+
+    '<option value="3">Fase 3 — Transferencia real a torneo</option>'+
+    '</select></div></div>'+
+    '<div id="cfgTypeSpecific"></div>'+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
+    '<button class="bsave-cfg" onclick="saveCfg()">Guardar cambios</button>'+
+    '<button class="btn-del" onclick="delClient()"><i class="ti ti-trash" style="font-size:14px"></i>Eliminar</button></div>'+
+    '<p id="cfgOk" style="font-size:12px;color:var(--g);margin-top:10px;display:none">✓ Guardado.</p></div></div>';
+}
+
+// HOME
+function upHome(){
+  var h=new Date().getHours(),g=h<12?'Buen día':h<19?'Buenas tardes':'Buenas noches';
+  var greetEl=document.getElementById('hGreet'); if(!greetEl) return;
+  if(isAdmin&&!isPrev){greetEl.textContent=g+', Coach.';return;}
+  greetEl.textContent=g+(S.name?', '+S.name.split(' ')[0]:'.')+'.';
+  if(S.type==='tennis'){
+    var blks=S.blocks||[],done=blks.filter(function(b){return b.completed;}).length;
+    var el=document.getElementById('hBlkSummary');
+    if(el) el.textContent=done+' / '+blks.length;
+    return;
+  }
+  var d=S.day||1,p=Math.round(d/90*100);
+  var dayEl=document.getElementById('hDay');if(dayEl)dayEl.textContent='Día '+d+' de 90';
+  var barEl=document.getElementById('hBar');if(barEl)barEl.style.width=p+'%';
+  var pctEl=document.getElementById('hPct');if(pctEl)pctEl.textContent=p+'% completado';
+  if(S.startDate){
+    var s=new Date(S.startDate+'T12:00:00'),e=new Date(s);e.setDate(e.getDate()+89);
+    var f=function(x){return x.toLocaleDateString('es-AR',{day:'numeric',month:'short'});};
+    var sEl=document.getElementById('hStart'),eEl=document.getElementById('hEnd');
+    if(sEl)sEl.textContent=f(s);if(eEl)eEl.textContent=f(e);
+  }
+  var done2=(S.ents||[]).filter(function(e){return e.status==='done';}).length;
+  var entEl=document.getElementById('hEntTxt');if(entEl)entEl.textContent=done2+' de 6 completados';
+  renderTL(); renderRefs(); renderEnts();
+}
+
+// TIMELINE — basado en fases reales
+function renderTL(){
+  var el=document.getElementById('tlContent'); if(!el) return;
+  var fase=S.fase||1;
+  var fases=[
+    {n:1,color:'#4ade80',rgb:'74,222,128',label:'Fase 1 — Recuperar claridad mental',desc:'Diagnóstico · Mapeo · Primeras herramientas',
+     pasos:[{t:'Sesión de diagnóstico',s:'Patrones mentales, historia competitiva, triggers y bloqueos'},{t:'Mapa de bloqueo competitivo',s:'Detonantes, patrones mentales y respuestas automáticas identificadas'},{t:'Banco de ejercicios mentales',s:'8 ejercicios por patrón de bloqueo — marco ontológico + mindfulness'}]},
+    {n:2,color:'#38bdf8',rgb:'56,189,248',label:'Fase 2 — Estabilidad competitiva',desc:'Ciclo recurrente por cada partido jugado',
+     pasos:[{t:'Cuestionario post-partido',s:'Estado mental, desconexión, reacción al error y autoevaluación 1–10'},{t:'Análisis de partidos',s:'5 dimensiones: patrones, decisiones, claridad, emociones y secuencias de bloqueo'},{t:'Sesión 1:1 de monitoreo',s:'Identificación del patrón activo + ejercicio mental en vivo'},{t:'Protocolos competitivos',s:'Pre-partido, entre puntos, post-error y cierre de partido'}]},
+    {n:3,color:'#fbbf24',rgb:'251,191,36',label:'Fase 3 — Transferencia real a torneo',desc:'Auditoría · Integración · Hoja de ruta',
+     pasos:[{t:'Auditoría post-torneo',s:'Reconstrucción partido a partido, disparadores y evaluación de protocolos'},{t:'Sesión 1:1 de cierre',s:'Devolución final, integración del proceso y hoja de ruta personal'}]}
+  ];
+  var html='';
+  fases.forEach(function(f){
+    var isDone=fase>f.n, isCur=fase===f.n, isPen=fase<f.n;
+    var fcolor=isDone?'#4ade80':isCur?f.color:'#444';
+    var fbg=isDone?'rgba(74,222,128,.08)':isCur?'rgba('+f.rgb+',.08)':'transparent';
+    var fborder=isDone?'rgba(74,222,128,.25)':isCur?'rgba('+f.rgb+',.25)':'rgba(255,255,255,.06)';
+    var statusLabel=isDone?'Completada':isCur?'En curso':'Pendiente';
+    var statusBg=isDone?'rgba(74,222,128,.12)':isCur?'rgba('+f.rgb+',.12)':'rgba(255,255,255,.05)';
+    var dotBg=isDone?'#4ade80':isCur?f.color:'#1a1a1a';
+    var dotColor=isDone||isCur?'#0a0a0a':'#444';
+    var dotContent=isDone?'<i class="ti ti-check"></i>':isCur?'<i class="ti ti-player-play"></i>':f.n;
+    html+='<div style="margin-bottom:20px">'+
+      '<div style="background:'+fbg+';border:1px solid '+fborder+';border-radius:12px;padding:14px 16px;margin-bottom:8px">'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+      '<div style="width:32px;height:32px;border-radius:50%;background:'+dotBg+';display:flex;align-items:center;justify-content:center;font-size:14px;color:'+dotColor+';font-weight:600;flex-shrink:0">'+dotContent+'</div>'+
+      '<div style="flex:1">'+
+      '<div style="font-size:14px;font-weight:600;color:'+fcolor+'">'+f.label+'</div>'+
+      '<div style="font-size:12px;color:#666;margin-top:2px">'+f.desc+'</div></div>'+
+      '<div style="font-size:10px;padding:3px 10px;border-radius:20px;background:'+statusBg+';color:'+fcolor+';white-space:nowrap">'+statusLabel+'</div></div></div>'+
+      f.pasos.map(function(p,pi){
+        var pcolor=isPen?'#333':isCur?f.color:'#4ade80';
+        return '<div style="display:flex;gap:12px;margin-bottom:6px;padding-left:16px;align-items:flex-start">'+
+          '<div style="width:8px;height:8px;border-radius:50%;background:'+pcolor+';margin-top:5px;flex-shrink:0"></div>'+
+          '<div><div style="font-size:13px;font-weight:500;color:'+(isPen?'#444':'#f0f0f0')+'">'+p.t+'</div>'+
+          '<div style="font-size:11px;color:#555;margin-top:1px">'+p.s+'</div></div></div>';
+      }).join('')+
+      (isCur&&f.n===2?'<div style="margin-left:16px;margin-top:6px;font-size:11px;color:'+f.color+';background:rgba('+f.rgb+',.08);border:1px solid rgba('+f.rgb+',.2);border-radius:8px;padding:6px 10px">↻ Ciclo recurrente — se repite por cada partido jugado</div>':'')+
+      '</div>';
+  });
+  el.innerHTML=html;
+}
+
+// REFLEXIONES
+function buildDots(){
+  var el=document.getElementById('iDots'); if(!el) return;
+  var h=''; for(var i=0;i<10;i++) h+='<div class="idot" id="d'+i+'"></div>';
+  el.innerHTML=h; upInt(5);
+}
+function upInt(v){
+  var el=document.getElementById('intVal'); if(!el) return;
+  el.textContent=v;
+  for(var i=0;i<10;i++){var d=document.getElementById('d'+i);if(d)d.className='idot'+(i<parseInt(v)?' on':'');}
+}
+function toggleRef(){var f=document.getElementById('rForm');if(f)f.style.display=f.style.display==='none'?'block':'none';}
+function renderRefs(){
+  var el=document.getElementById('rList'); if(!el) return;
+  if(!S.refs||!S.refs.length){el.innerHTML='<p style="color:var(--m);font-size:13px;text-align:center;padding:24px 0">Sin reflexiones todavía.</p>';return;}
+  el.innerHTML=S.refs.slice().reverse().map(function(r){
+    var ds=r.fecha?new Date(r.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'}):'';
+    return '<div class="rc"><div class="rct"><div class="rcm"><span class="rcd">'+ds+'</span><span class="rbadge">'+r.tipo+'</span>'+(r.res?'<span class="rres">'+r.res+'</span>':'')+
+      '</div><span class="rint"><i class="ti ti-brain" style="font-size:13px"></i>'+r.int+'/10</span></div><h4>'+r.mental+'</h4>'+(r.apr?'<p>'+r.apr+'</p>':'')+'</div>';
+  }).join('');
+}
+function doSaveRef(){
+  var m=document.getElementById('rMental').value.trim(); if(!m) return;
+  var r={tipo:document.getElementById('rTipo').value,fecha:document.getElementById('rFecha').value,
+    res:document.getElementById('rRes').value,int:parseInt(document.getElementById('rInt').value),
+    mental:m,apr:document.getElementById('rApr').value.trim()};
+  S.refs.push(r); DB[S.code].refs=S.refs;
+  saveRefDB(S.code,r);
+  ['rMental','rApr','rFecha'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('rInt').value=5; upInt(5);
+  document.getElementById('rForm').style.display='none'; renderRefs();
+}
+
+// PROTOCOLOS
+function showProt(idx,btn){
+  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('on');});
+  if(btn) btn.classList.add('on');
+  else{var tabs=document.querySelectorAll('.ptab');if(tabs[idx])tabs[idx].classList.add('on');}
+  var p=(S.prots||DEF_PROT)[idx]; if(!p) return;
+  var el=document.getElementById('protContent'); if(!el) return;
+  el.innerHTML='<div class="pcard"><div class="pch"><i class="ti '+p.icon+'"></i><div><h3>'+p.title+'</h3><p>'+p.sub+'</p></div></div>'+
+    p.steps.map(function(s,i){return '<div class="pstep"><div class="pnum">'+(i+1)+'</div><div class="ptxt">'+s+'</div></div>';}).join('')+'</div>';
+}
+
+// ENTREGABLES
+function renderEnts(){
+  var el=document.getElementById('entList'); if(!el) return;
+  var ents=S.ents||[];
+  var done=ents.filter(function(e){return e.status==='done';}).length;
+  var cnt=document.getElementById('entCount');if(cnt)cnt.textContent=done+' de '+ents.length+' completados';
+  el.innerHTML=ents.map(function(e){
+    var cls=e.lbl==='En curso'?'progress':e.status==='done'?'done':'pending';
+    var eckCls=e.lbl==='En curso'?'progress':e.status==='done'?'done':'pending';
+    var icon=e.lbl==='En curso'?'<i class="ti ti-player-play"></i>':e.status==='done'?'<i class="ti ti-check"></i>':'<i class="ti ti-clock"></i>';
+    return '<div class="ei '+cls+'"><div class="eck '+eckCls+'">'+icon+'</div>'+
+      '<div class="eb"><h4>'+e.title+'</h4><p>'+e.desc+'</p></div>'+
+      '<span class="est '+cls+'">'+e.lbl+'</span></div>';
+  }).join('');
+}
+
+// BLOQUES TENNIS
+function setBlkCat(cat,btn){
+  curBlkCat=cat;
+  document.querySelectorAll('.blk-tab').forEach(function(t){t.classList.remove('on');});
+  if(btn) btn.classList.add('on');
+  renderBlocks();
+}
+function renderBlocks(){
+  var el=document.getElementById('blkList'); if(!el) return;
+  var blks=S.blocks||[];
+  var filtered=curBlkCat==='all'?blks:blks.filter(function(b){return b.category===curBlkCat;});
+  if(!filtered.length){el.innerHTML='<p style="color:var(--m);font-size:13px;text-align:center;padding:24px 0">No hay actividades en esta categoría todavía.</p>';return;}
+  el.innerHTML=filtered.map(function(b){
+    var catLabel=b.category==='mental'?'🧠 Mental':b.category==='movilidad'?'🤸 Movilidad':'🎾 Drill';
+    var catCls=b.category||'mental';
+    var videoHtml=b.video_url?'<div class="blk-video"><iframe src="'+b.video_url+'" allowfullscreen></iframe></div>':'';
+    return '<div class="blk-card'+(b.completed?' done':'')+'">'+
+      '<div class="blk-header"><div class="blk-title">'+b.title+'</div>'+
+      '<div class="blk-badges"><span class="blk-badge '+catCls+'">'+catLabel+'</span>'+(b.level?'<span class="blk-badge level">'+b.level+'</span>':'')+'</div></div>'+
+      '<div class="blk-body">'+b.body+'</div>'+videoHtml+
+      '<div class="blk-footer">'+
+      '<button class="btn-complete'+(b.completed?' done':'').trim()+'" onclick="toggleComplete(\''+b.id+'\')">'+
+      (b.completed?'<i class="ti ti-check"></i>Completado':'<i class="ti ti-circle-check"></i>Marcar como completado')+'</button>'+
+      (b.completed?'<span class="blk-date">'+(b.completed_at?new Date(b.completed_at).toLocaleDateString('es-AR',{day:'numeric',month:'short'}):'')+'</span>':'')+'</div></div>';
+  }).join('');
+}
+function toggleComplete(id){
+  var blks=S.blocks||[],blk=null;
+  for(var i=0;i<blks.length;i++){if(blks[i].id===id){blk=blks[i];break;}}
+  if(!blk) return;
+  blk.completed=!blk.completed; blk.completed_at=blk.completed?new Date().toISOString():null;
+  DB[S.code].blocks=blks;
+  updateBlockDB(id,{completed:blk.completed,completed_at:blk.completed_at});
+  upHome(); renderBlocks();
+}
+
+// ADMIN
+function renderDash(){
+  var codes=Object.keys(DB),total=codes.length;
+  var ment=codes.filter(function(c){return (DB[c].type||'mentoria')==='mentoria';});
+  var days=ment.map(function(c){return calcDay(DB[c].startDate);});
+  var avg=days.length?Math.round(days.reduce(function(a,b){return a+b;},0)/days.length):0;
+  var ending=ment.filter(function(c){return calcDay(DB[c].startDate)>=75;}).length;
+  document.getElementById('metTotal').textContent=total;
+  document.getElementById('metAvg').textContent=avg?'Día '+avg:'—';
+  document.getElementById('metEnd').textContent=ending;
+  document.getElementById('metBars').innerHTML=!ment.length?'<p style="font-size:12px;color:var(--m2)">Sin jugadores de mentoría.</p>':
+    ment.map(function(code){
+      var c=DB[code],d=calcDay(c.startDate),pct=Math.round(d/90*100),col=d>=75?'#fbbf24':'var(--g)';
+      return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px">'+c.name+'</span><span style="font-size:12px;color:var(--m)">Día '+d+' · '+pct+'%</span></div>'+
+        '<div style="background:var(--s2);border-radius:4px;height:5px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+col+';border-radius:4px"></div></div></div>';
+    }).join('');
+  document.getElementById('metRefs').innerHTML=!codes.length?'<p style="font-size:12px;color:var(--m2)">Sin clientes.</p>':
+    codes.map(function(code){
+      var refs=(DB[code].refs||[]).length;
+      return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--b)"><span style="font-size:13px">'+DB[code].name+'</span>'+
+        '<span style="font-size:13px;color:'+(refs>0?'var(--g)':'var(--m2)')+';font-weight:500">'+refs+' reflexión'+(refs!==1?'es':'')+'</span></div>';
+    }).join('');
+}
+function showList(){
+  document.getElementById('adminMain').style.display='block';
+  document.getElementById('adminNew').style.display='none';
+  document.getElementById('adminEdit').style.display='none';
+  renderDash();
+  var codes=Object.keys(DB);
+  document.getElementById('clientList').innerHTML=!codes.length
+    ?'<p style="font-size:13px;color:var(--m2);text-align:center;padding:24px 0">Sin clientes.</p>'
+    :codes.map(function(code){
+      var c=DB[code],d=calcDay(c.startDate),pct=Math.round(d/90*100);
+      var isTennis=(c.type||'mentoria')==='tennis';
+      var ini=c.name.split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+      return '<div class="client-card"><div class="client-avatar'+(isTennis?' tennis':'')+'" onclick="editClient(\''+code+'\')">'+ini+'</div>'+
+        '<div class="client-info" onclick="editClient(\''+code+'\')"><h4>'+c.name+'<span class="type-badge '+(c.type||'mentoria')+'">'+(isTennis?'Alumno tenis':'Mentoría')+'</span></h4>'+
+        '<p>'+code+(isTennis?'':' · Día '+d+' de 90 · Fase '+(c.fase||1))+'</p></div>'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+        '<button class="btn-view" onclick="event.stopPropagation();previewClient(\''+code+'\')">Ver vista</button>'+
+        (!isTennis?'<span style="font-size:12px;color:var(--g);font-weight:500">'+pct+'%</span>':'')+'</div></div>';
+    }).join('');
+}
+function showNew(){
+  document.getElementById('adminMain').style.display='none';
+  document.getElementById('adminNew').style.display='block';
+  document.getElementById('adminEdit').style.display='none';
+}
+function createClient(){
+  var name=document.getElementById('nwName').value.trim();
+  var code=document.getElementById('nwCode').value.trim().toUpperCase();
+  var type=document.getElementById('nwType').value;
+  var start=document.getElementById('nwStart').value;
+  var pass=document.getElementById('nwPass').value.trim()||defPass(name);
+  var err=document.getElementById('nwErr');
+  if(!name||!code){err.textContent='Nombre y código son obligatorios.';err.style.display='block';return;}
+  if(DB[code]||code===ACODE){err.textContent='Ese código ya existe.';err.style.display='block';return;}
+  var nc={code:code,name:name,startDate:start,pass:pass,type:type,fase:1,prots:null,ents:null,refs:[],blocks:[]};
+  DB[code]=nc;
+  saveClientDB(nc).then(function(res){
+    if(res===null){err.textContent='Error al guardar. Intentá de nuevo.';err.style.display='block';return;}
+    err.style.display='none';
+    ['nwName','nwCode','nwStart','nwPass'].forEach(function(id){document.getElementById(id).value='';});
+    showList();
+  });
+}
+function editClient(code){
+  editCode=code;
+  loadBlocks(code).then(function(){
+    S=getClient(code);
+    document.getElementById('adminMain').style.display='none';
+    document.getElementById('adminNew').style.display='none';
+    document.getElementById('adminEdit').style.display='block';
+    document.getElementById('editLbl').textContent='Editando: '+S.name;
+    document.getElementById('cfgName').value=S.name||'';
+    document.getElementById('cfgCode').value=S.code||'';
+    document.getElementById('cfgType').value=S.type||'mentoria';
+    document.getElementById('cfgPass').value=S.pass||defPass(S.name);
+    document.getElementById('cfgStart').value=S.startDate||'';
+    document.getElementById('cfgDayTxt').textContent='Día '+S.day+' (automático)';
+    document.getElementById('cfgFase').value=S.fase||1;
+    // Mostrar/ocultar fase según tipo
+    var faseRow=document.getElementById('cfgFaseRow');
+    if(faseRow) faseRow.style.display=(S.type==='tennis')?'none':'flex';
+    renderTypeSpecific();
+  });
+}
+function onTypeChange(){
+  var type=document.getElementById('cfgType').value;
+  var faseRow=document.getElementById('cfgFaseRow');
+  if(faseRow) faseRow.style.display=(type==='tennis')?'none':'flex';
+  renderTypeSpecific();
+}
+function renderTypeSpecific(){
+  var el=document.getElementById('cfgTypeSpecific'); if(!el) return;
+  var type=document.getElementById('cfgType').value;
+  if(type==='mentoria'){
+    el.innerHTML='<div class="csec"><h3>Estado de entregables</h3>'+
+      '<div id="cfgEnt">'+
+      (S.ents||DEF_ENT).map(function(e,i){
+        return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+
+          '<select class="ci" id="es'+i+'" style="max-width:150px">'+
+          ['Pendiente','En curso','Entregado'].map(function(o){return '<option'+(e.lbl===o?' selected':'')+'>'+o+'</option>';}).join('')+
+          '</select>'+
+          '<span style="font-size:12px;color:var(--m);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+e.title+'</span></div>';
+      }).join('')+
+      '</div></div>'+
+      '<div class="csec"><h3>Pasos de protocolos</h3>'+
+      '<p style="font-size:12px;color:var(--m);margin-bottom:12px">Personalizá los pasos para este cliente.</p>'+
+      '<div id="cfgProt">'+
+      (S.prots||DEF_PROT).map(function(p,pi){
+        return '<div style="margin-bottom:16px">'+
+          '<div style="font-size:11px;font-weight:500;color:var(--m);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">'+p.title+'</div>'+
+          p.steps.map(function(s,si){
+            return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'+
+              '<span style="font-size:11px;color:var(--m2);width:16px;flex-shrink:0">'+(si+1)+'</span>'+
+              '<input class="ci" id="p'+pi+'_'+si+'" value="'+s.replace(/"/g,'&quot;')+'"></div>';
+          }).join('')+'</div>';
+      }).join('')+'</div></div>';
+  } else {
+    var assigned=DB[editCode]?DB[editCode].blocks||[]:[];
+    var assignedTitles=assigned.map(function(b){return b.title;});
+    el.innerHTML='<div class="csec"><h3>Actividades asignadas</h3>'+
+      '<div id="assignedList">'+renderAssigned(assigned)+'</div>'+
+      '<div style="margin-top:16px">'+
+      '<div style="font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Agregar de la biblioteca</div>'+
+      '<div class="blk-cat-tabs" style="margin-bottom:10px">'+
+      '<button class="blk-tab on" onclick="filterLib(\'all\',this)" style="font-size:11px;padding:4px 10px">Todas</button>'+
+      '<button class="blk-tab" onclick="filterLib(\'mental\',this)" style="font-size:11px;padding:4px 10px">🧠 Mental</button>'+
+      '<button class="blk-tab" onclick="filterLib(\'movilidad\',this)" style="font-size:11px;padding:4px 10px">🤸 Movilidad</button>'+
+      '<button class="blk-tab" onclick="filterLib(\'drill\',this)" style="font-size:11px;padding:4px 10px">🎾 Drills</button></div>'+
+      '<div id="libList">'+renderLib(LIBRARY,'all',assignedTitles)+'</div></div></div>';
+  }
+}
+function renderAssigned(assigned){
+  if(!assigned.length) return '<p style="font-size:12px;color:var(--m2)">No hay actividades asignadas todavía.</p>';
+  return assigned.map(function(b){
+    var cat=b.category==='mental'?'🧠':b.category==='movilidad'?'🤸':'🎾';
+    return '<div class="assigned-block"><div class="ab-info"><h4>'+cat+' '+b.title+'</h4>'+
+      '<p>'+(b.completed?'✅ Completado':'Pendiente')+'</p></div>'+
+      '<button class="btn-rm" onclick="removeBlock(\''+b.id+'\')">Quitar</button></div>';
+  }).join('');
+}
+function renderLib(items,cat,assignedTitles){
+  var filtered=cat==='all'?items:items.filter(function(i){return i.cat===cat;});
+  return filtered.map(function(item){
+    var taken=assignedTitles.indexOf(item.title)>-1;
+    return '<div class="lib-item'+(taken?' sel':'')+'\" onclick="'+(taken?'':'addBlock(\''+item.id+'\')')+'">'+
+      '<div class="lib-item-top"><h4>'+item.title+'</h4>'+
+      '<span style="font-size:11px;color:'+(taken?'var(--g)':'var(--m)')+'">'+(taken?'✓ Asignado':item.level)+'</span></div></div>';
+  }).join('');
+}
+function filterLib(cat,btn){
+  document.querySelectorAll('#cfgTypeSpecific .blk-tab').forEach(function(t){t.classList.remove('on');});
+  if(btn) btn.classList.add('on');
+  var assigned=DB[editCode]?DB[editCode].blocks||[]:[];
+  var assignedTitles=assigned.map(function(b){return b.title;});
+  var el=document.getElementById('libList');if(el)el.innerHTML=renderLib(LIBRARY,cat,assignedTitles);
+}
+function addBlock(libId){
+  var item=null;
+  for(var i=0;i<LIBRARY.length;i++){if(LIBRARY[i].id===libId){item=LIBRARY[i];break;}}
+  if(!item) return;
+  var assigned=DB[editCode]?DB[editCode].blocks||[]:[];
+  var newBlock={client_code:editCode,title:item.title,body:item.body,video_url:item.video||'',
+    category:item.cat,level:item.level,order_index:assigned.length,completed:false};
+  addBlockDB(newBlock).then(function(res){
+    if(!res||!res.length) return;
+    assigned.push(res[0]); DB[editCode].blocks=assigned;
+    document.getElementById('assignedList').innerHTML=renderAssigned(assigned);
+    var assignedTitles=assigned.map(function(b){return b.title;});
+    var activeTab=document.querySelector('#cfgTypeSpecific .blk-tab.on');
+    var cat='all';
+    if(activeTab){var t=activeTab.textContent;cat=t.includes('Mental')?'mental':t.includes('Movilidad')?'movilidad':t.includes('Drill')?'drill':'all';}
+    var el=document.getElementById('libList');if(el)el.innerHTML=renderLib(LIBRARY,cat,assignedTitles);
+  });
+}
+function removeBlock(id){
+  if(!DB[editCode]) return;
+  DB[editCode].blocks=(DB[editCode].blocks||[]).filter(function(b){return b.id!==id;});
+  delBlockDB(id).then(function(){
+    document.getElementById('assignedList').innerHTML=renderAssigned(DB[editCode].blocks);
+    var assignedTitles=DB[editCode].blocks.map(function(b){return b.title;});
+    var activeTab=document.querySelector('#cfgTypeSpecific .blk-tab.on');
+    var cat='all';
+    if(activeTab){var t=activeTab.textContent;cat=t.includes('Mental')?'mental':t.includes('Movilidad')?'movilidad':t.includes('Drill')?'drill':'all';}
+    var el=document.getElementById('libList');if(el)el.innerHTML=renderLib(LIBRARY,cat,assignedTitles);
+  });
+}
+function saveCfg(){
+  if(!editCode) return;
+  var type=document.getElementById('cfgType').value;
+  S.name=document.getElementById('cfgName').value.trim();
+  S.pass=document.getElementById('cfgPass').value.trim()||defPass(S.name);
+  S.startDate=document.getElementById('cfgStart').value;
+  S.type=type;
+  S.fase=parseInt(document.getElementById('cfgFase').value)||1;
+  S.day=calcDay(S.startDate);
+  if(type==='mentoria'){
+    (S.ents||[]).forEach(function(_,i){
+      var lbl=document.getElementById('es'+i).value;
+      S.ents[i].lbl=lbl;
+      S.ents[i].status=(lbl==='Pendiente')?'pending':(lbl==='En curso')?'pending':'done';
+    });
+    (S.prots||[]).forEach(function(p,pi){
+      p.steps.forEach(function(_,si){var el=document.getElementById('p'+pi+'_'+si);if(el)p.steps[si]=el.value||p.steps[si];});
+    });
+  }
+  Object.assign(DB[editCode],{name:S.name,pass:S.pass,type:S.type,fase:S.fase,startDate:S.startDate,ents:S.ents,prots:S.prots});
+  saveClientDB(DB[editCode]).then(function(res){
+    if(res===null){alert('Error al guardar.');return;}
+    document.getElementById('editLbl').textContent='Editando: '+S.name;
+    document.getElementById('cfgDayTxt').textContent='Día '+S.day+' (automático)';
+    var ok=document.getElementById('cfgOk');ok.style.display='block';setTimeout(function(){ok.style.display='none';},2500);
+  });
+}
+function delClient(){
+  if(!editCode) return;
+  if(!confirm('¿Eliminar a '+DB[editCode].name+'?')) return;
+  delClientDB(editCode).then(function(){delete DB[editCode];editCode=null;showList();});
+}
+function previewClient(code){
+  isPrev=true;
+  var loads=[loadRefs(code)];
+  if((DB[code].type||'mentoria')==='tennis') loads.push(loadBlocks(code));
+  Promise.all(loads).then(function(){
+    S=getClient(code);
+    document.getElementById('previewBar').style.display='flex';
+    document.getElementById('previewName').textContent=S.name;
+    document.getElementById('tbName').textContent=S.name;
+    buildNav(); buildContent(); go('home');
+  });
+}
+function exitPreview(){
+  isPrev=false;
+  document.getElementById('previewBar').style.display='none';
+  document.getElementById('tbName').textContent='Coach JC';
+  S={};
+  buildNav(); buildContent(); go('admin'); showList();
+}
+function go(id){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
+  var el=document.getElementById('scr-'+id);if(el)el.classList.add('on');
+  document.querySelectorAll('.nb').forEach(function(b){
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').indexOf("'"+id+"'")>-1)b.classList.add('on');
+  });
+}
+</script>
+</body>
+</html>
