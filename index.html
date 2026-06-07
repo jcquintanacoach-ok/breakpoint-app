@@ -244,12 +244,12 @@ var DEF_PROT=[
 ];
 
 var DEF_ENT=[
-  {title:'Sesión inicial de diagnóstico',desc:'Análisis de patrones mentales, bloqueos y triggers competitivos',status:'pending',lbl:'Pendiente'},
-  {title:'Mapa de bloqueo personalizado',desc:'Documento con detonantes, respuestas automáticas y comportamientos bajo presión',status:'pending',lbl:'Pendiente'},
-  {title:'Análisis de partidos',desc:'Revisión de grabaciones y audio para identificar patrones',status:'pending',lbl:'Pendiente'},
-  {title:'Auditorías post-torneo',desc:'Análisis estructurado después de cada torneo',status:'pending',lbl:'Pendiente'},
-  {title:'Sesiones 1:1',desc:'Sesión de monitoreo con simulación competitiva + sesión de cierre',status:'pending',lbl:'Pendiente'},
-  {title:'Soporte directo',desc:'Regulación competitiva entre partidos y torneos vía WhatsApp',status:'pending',lbl:'Pendiente'}
+  {title:'Sesión inicial de diagnóstico',desc:'Análisis de patrones mentales, bloqueos y triggers competitivos',status:'pending',lbl:'Pendiente',link:''},
+  {title:'Mapa de bloqueo personalizado',desc:'Documento con detonantes, respuestas automáticas y comportamientos bajo presión',status:'pending',lbl:'Pendiente',link:''},
+  {title:'Análisis de partidos',desc:'Revisión de grabaciones y audio para identificar patrones',status:'pending',lbl:'Pendiente',link:''},
+  {title:'Auditorías post-torneo',desc:'Análisis estructurado después de cada torneo',status:'pending',lbl:'Pendiente',link:''},
+  {title:'Sesiones 1:1',desc:'Sesión de monitoreo con simulación competitiva + sesión de cierre',status:'pending',lbl:'Pendiente',link:''},
+  {title:'Soporte directo',desc:'Regulación competitiva entre partidos y torneos vía WhatsApp',status:'pending',lbl:'Pendiente',link:''}
 ];
 
 var LIBRARY=[
@@ -702,8 +702,9 @@ function renderEnts(){
     var eckCls=e.lbl==='En curso'?'progress':e.status==='done'?'done':'pending';
     var icon=e.lbl==='En curso'?'<i class="ti ti-player-play"></i>':e.status==='done'?'<i class="ti ti-check"></i>':'<i class="ti ti-clock"></i>';
     return '<div class="ei '+cls+'"><div class="eck '+eckCls+'">'+icon+'</div>'+
-      '<div class="eb"><h4>'+e.title+'</h4><p>'+e.desc+'</p></div>'+
-      '<span class="est '+cls+'">'+e.lbl+'</span></div>';
+      '<div class="eb"><h4>'+e.title+'</h4><p>'+e.desc+'</p>'+
+      (e.link?'<a href="'+e.link+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;color:var(--g);text-decoration:none;background:var(--gdim);border:1px solid rgba(74,222,128,.25);padding:4px 10px;border-radius:6px"><i class="ti ti-external-link" style="font-size:13px"></i>Ver documento</a>':'')+
+      '</div><span class="est '+cls+'">'+e.lbl+'</span></div>';
   }).join('');
 }
 
@@ -847,6 +848,7 @@ function renderTypeSpecific(){
           '<select class="ci" id="es'+i+'" style="max-width:150px">'+
           ['Pendiente','En curso','Entregado'].map(function(o){return '<option'+(e.lbl===o?' selected':'')+'>'+o+'</option>';}).join('')+
           '</select>'+
+          '<input class="ci" id="el'+i+'" placeholder="Link (opcional)" value="'+(e.link||'')+'" style="max-width:220px">'+
           '<span style="font-size:12px;color:var(--m);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+e.title+'</span></div>';
       }).join('')+
       '</div></div>'+
@@ -944,7 +946,9 @@ function saveCfg(){
   if(type==='mentoria'){
     (S.ents||[]).forEach(function(_,i){
       var lbl=document.getElementById('es'+i).value;
+      var link=document.getElementById('el'+i).value.trim();
       S.ents[i].lbl=lbl;
+      S.ents[i].link=link;
       S.ents[i].status=(lbl==='Pendiente')?'pending':(lbl==='En curso')?'pending':'done';
     });
     (S.prots||[]).forEach(function(p,pi){
