@@ -615,7 +615,7 @@ function upHome(){
     if(sEl)sEl.textContent=f(s);if(eEl)eEl.textContent=f(e);
   }
   var done2=(S.ents||[]).filter(function(e){return e.status==='done';}).length;
-  var entEl=document.getElementById('hEntTxt');if(entEl)entEl.textContent=done2+' de 6 completados';
+  var entEl=document.getElementById('hEntTxt');if(entEl)entEl.textContent=done2+' de '+(S.ents||[]).length+' completados';
   renderTL(); renderRefs(); renderEnts();
 }
 
