@@ -198,7 +198,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0a0a0a;color:#f0
 
 <div id="access">
   <div class="acc-logo">Break Point — Mentoría de Rendimiento Competitivo</div>
-  <div class="acc-title" id="accTitle">Éste es el quiebre que tu juego necesita</div>
+  <div class="acc-title" id="accTitle">Tu punto de quiebre empieza acá</div>
   <div class="acc-sub" id="accSub">Ingresá tu código de acceso</div>
   <div class="acc-form" id="stepCode">
     <label class="acc-lbl">Código</label>
@@ -247,6 +247,7 @@ var DEF_PROT=[
 var DEF_ENT=[
   {title:'Sesión inicial de diagnóstico',desc:'Análisis de patrones mentales, bloqueos y triggers competitivos',status:'pending',lbl:'Pendiente',link:''},
   {title:'Mapa de bloqueo personalizado',desc:'Documento con detonantes, respuestas automáticas y comportamientos bajo presión',status:'pending',lbl:'Pendiente',link:''},
+  {title:'Banco de ejercicios mentales',desc:'8 ejercicios por patrón de bloqueo — marco ontológico + mindfulness',status:'pending',lbl:'Pendiente',link:''},
   {title:'Análisis de partidos',desc:'Revisión de grabaciones y audio para identificar patrones',status:'pending',lbl:'Pendiente',link:''},
   {title:'Auditorías post-torneo',desc:'Análisis estructurado después de cada torneo',status:'pending',lbl:'Pendiente',link:''},
   {title:'Sesiones 1:1',desc:'Sesión de monitoreo con simulación competitiva + sesión de cierre',status:'pending',lbl:'Pendiente',link:''},
@@ -408,7 +409,7 @@ function doPass(){
 function backCode(){
   document.getElementById('stepPass').style.display='none';
   document.getElementById('stepCode').style.display='block';
-  document.getElementById('accTitle').textContent='Éste es el quiebre que tu juego necesita';
+  document.getElementById('accTitle').textContent='Tu punto de quiebre';
   document.getElementById('accSub').textContent='Ingresá tu código de acceso';
   document.getElementById('passIn').value=''; document.getElementById('passErr').style.display='none';
 }
@@ -430,7 +431,7 @@ function doLogout(){
   document.getElementById('stepCode').style.display='block';
   document.getElementById('stepPass').style.display='none';
   document.getElementById('codeIn').value=''; document.getElementById('passIn').value='';
-  document.getElementById('accTitle').textContent='Éste es el quiebre que tu juego necesita';
+  document.getElementById('accTitle').textContent='Tu punto de quiebre';
   document.getElementById('accSub').textContent='Ingresá tu código de acceso';
   document.getElementById('accErr').style.display='none'; document.getElementById('passErr').style.display='none';
 }
