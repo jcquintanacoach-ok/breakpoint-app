@@ -299,10 +299,24 @@ function defPass(name){return name.split(' ')[0].toLowerCase().normalize('NFD').
 
 function getClient(code){
   var c=DB[code]; if(!c) return null;
+  // Sincronizar entregables con el default: agregar los que falten por título
+  var ents;
+  if(c.ents){
+    ents=JSON.parse(JSON.stringify(c.ents));
+    DEF_ENT.forEach(function(def,idx){
+      var existe=ents.some(function(e){return e.title===def.title;});
+      if(!existe){
+        // Insertar en la posición correcta según el default
+        ents.splice(idx,0,JSON.parse(JSON.stringify(def)));
+      }
+    });
+  } else {
+    ents=JSON.parse(JSON.stringify(DEF_ENT));
+  }
   return {code:c.code,name:c.name,startDate:c.startDate,pass:c.pass||defPass(c.name),
     type:c.type||'mentoria',fase:c.fase||1,day:calcDay(c.startDate),
     prots:c.prots?JSON.parse(JSON.stringify(c.prots)):JSON.parse(JSON.stringify(DEF_PROT)),
-    ents:c.ents?JSON.parse(JSON.stringify(c.ents)):JSON.parse(JSON.stringify(DEF_ENT)),
+    ents:ents,
     refs:c.refs||[],blocks:c.blocks||[]};
 }
 
